@@ -1,6 +1,5 @@
-"use client";
 import { useRouter } from "next/navigation";
-import { products } from "@/lib/products";
+import { products } from "../lib/products";
 import Link from 'next/link';
 
 export default function ProductCard({ id }) {

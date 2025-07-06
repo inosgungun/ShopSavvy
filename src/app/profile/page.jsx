@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { useAuth } from "@/lib/useAuth";
+import { auth } from "../../lib/firebase";
+import { useAuth } from "../../lib/useAuth";
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();

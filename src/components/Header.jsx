@@ -2,8 +2,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { useAuth } from "@/lib/useAuth";
+import { auth } from "../lib/firebase";
+import { useAuth } from "../lib/useAuth";
 
 export default function Header() {
   const { user, loading } = useAuth();

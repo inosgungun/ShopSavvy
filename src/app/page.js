@@ -1,24 +1,27 @@
 "use client";
 import { useState, useMemo } from "react";
 import Header from "@/components/Header";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "../components/ProductCard";
 import { products } from "@/lib/products";
 
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Fallback to empty array if productsList is undefined
+  const productsList = products || [];
+
   const filteredProducts = useMemo(() => {
     if (!searchQuery.trim()) {
-      return products;
+      return productsList;
     }
     
     const query = searchQuery.toLowerCase().trim();
-    return products.filter(product => 
+    return productsList.filter(product => 
       product.name.toLowerCase().includes(query) ||
       product.description.toLowerCase().includes(query) ||
       product.price.toString().includes(query)
     );
-  }, [searchQuery]);
+  }, [searchQuery, productsList]);
 
   return (
     <div>
