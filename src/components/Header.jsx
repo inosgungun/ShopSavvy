@@ -1,22 +1,36 @@
 "use client";
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { useAuth } from "@/lib/useAuth";
 
 export default function Header() {
-  const [user, setUser] = useState(null);
+  const { user, loading } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    setUser(currentUser);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("currentUser");
-    setUser(null);
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      router.push("/login");
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-between items-center p-4 shadow-md">
+        <h1 className="text-xl font-semibold">ShopSavvy</h1>
+        <div className="space-x-4">
+          <Link href="/" className="text-gray-700 hover:text-blue-600">Home</Link>
+          <Link href="/cart" className="text-gray-700 hover:text-blue-600">Shopping Cart</Link>
+          <span className="text-gray-500">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-between items-center p-4 shadow-md">

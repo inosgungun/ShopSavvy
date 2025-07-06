@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function LoginPage() {
     const [formData, setFormData] = useState({
@@ -9,6 +11,7 @@ export default function LoginPage() {
         password: ""
     });
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleChange = (e) => {
@@ -18,35 +21,50 @@ export default function LoginPage() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setLoading(true);
 
         // Simple validation
         if (!formData.email || !formData.password) {
             setError("Please fill in all fields");
+            setLoading(false);
             return;
         }
 
-        if (formData.password.length < 6) {
-            setError("Password must be at least 6 characters");
-            return;
-        }
-
-        // Check if user exists in localStorage
-        const users = JSON.parse(localStorage.getItem("users")) || [];
-        const user = users.find(u => u.email === formData.email && u.password === formData.password);
-
-        if (user) {
-            // Store logged in user info
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+            const user = userCredential.user;
+            
+            // Store user info in localStorage for easy access
             localStorage.setItem("currentUser", JSON.stringify({
-                id: user.id,
-                name: user.name,
+                id: user.uid,
+                name: user.displayName || user.email.split('@')[0],
                 email: user.email
             }));
+            
             router.push("/profile");
-        } else {
-            setError("Invalid email or password");
+        } catch (error) {
+            console.error("Login error:", error);
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    setError("No account found with this email");
+                    break;
+                case 'auth/wrong-password':
+                    setError("Incorrect password");
+                    break;
+                case 'auth/invalid-email':
+                    setError("Invalid email address");
+                    break;
+                case 'auth/too-many-requests':
+                    setError("Too many failed attempts. Please try again later");
+                    break;
+                default:
+                    setError("Failed to sign in. Please try again");
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -85,6 +103,7 @@ export default function LoginPage() {
                                 placeholder="Email address"
                                 value={formData.email}
                                 onChange={handleChange}
+                                disabled={loading}
                             />
                         </div>
                         <div>
@@ -101,6 +120,7 @@ export default function LoginPage() {
                                 placeholder="Password"
                                 value={formData.password}
                                 onChange={handleChange}
+                                disabled={loading}
                             />
                         </div>
                     </div>
@@ -108,9 +128,17 @@ export default function LoginPage() {
                     <div>
                         <button
                             type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            disabled={loading}
+                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Sign in
+                            {loading ? (
+                                <div className="flex items-center">
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                    Signing in...
+                                </div>
+                            ) : (
+                                "Sign in"
+                            )}
                         </button>
                     </div>
                 </form>

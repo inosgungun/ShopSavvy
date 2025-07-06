@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function SignupPage() {
     const [formData, setFormData] = useState({
@@ -11,6 +13,7 @@ export default function SignupPage() {
         confirmPassword: ""
     });
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleChange = (e) => {
@@ -20,54 +23,62 @@ export default function SignupPage() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setLoading(true);
 
-        // Validation
         if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
             setError("Please fill in all fields");
+            setLoading(false);
             return;
         }
 
         if (formData.password.length < 6) {
             setError("Password must be at least 6 characters");
+            setLoading(false);
             return;
         }
 
         if (formData.password !== formData.confirmPassword) {
             setError("Passwords do not match");
+            setLoading(false);
             return;
         }
 
-        // Check if user already exists
-        const users = JSON.parse(localStorage.getItem("users")) || [];
-        const existingUser = users.find(u => u.email === formData.email);
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+            const user = userCredential.user;
 
-        if (existingUser) {
-            setError("User with this email already exists");
-            return;
+            await updateProfile(user, {
+                displayName: formData.name
+            });
+
+            localStorage.setItem("currentUser", JSON.stringify({
+                id: user.uid,
+                name: formData.name,
+                email: user.email
+            }));
+
+            router.push("/profile");
+        } catch (error) {
+            console.error("Signup error:", error);
+            switch (error.code) {
+                case 'auth/email-already-in-use':
+                    setError("An account with this email already exists");
+                    break;
+                case 'auth/invalid-email':
+                    setError("Invalid email address");
+                    break;
+                case 'auth/weak-password':
+                    setError("Password is too weak. Please choose a stronger password");
+                    break;
+                default:
+                    setError("Failed to create account. Please try again");
+            }
+        } finally {
+            setLoading(false);
         }
-
-        // Create new user
-        const newUser = {
-            id: Date.now().toString(),
-            name: formData.name,
-            email: formData.email,
-            password: formData.password
-        };
-
-        users.push(newUser);
-        localStorage.setItem("users", JSON.stringify(users));
-
-        // Auto login after signup
-        localStorage.setItem("currentUser", JSON.stringify({
-            id: newUser.id,
-            name: newUser.name,
-            email: newUser.email
-        }));
-
-        router.push("/profile");
     };
 
     return (
@@ -105,6 +116,7 @@ export default function SignupPage() {
                                 placeholder="Full Name"
                                 value={formData.name}
                                 onChange={handleChange}
+                                disabled={loading}
                             />
                         </div>
                         <div>
@@ -121,6 +133,7 @@ export default function SignupPage() {
                                 placeholder="Email address"
                                 value={formData.email}
                                 onChange={handleChange}
+                                disabled={loading}
                             />
                         </div>
                         <div>
@@ -137,6 +150,7 @@ export default function SignupPage() {
                                 placeholder="Password"
                                 value={formData.password}
                                 onChange={handleChange}
+                                disabled={loading}
                             />
                         </div>
                         <div>
@@ -153,6 +167,7 @@ export default function SignupPage() {
                                 placeholder="Confirm Password"
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
+                                disabled={loading}
                             />
                         </div>
                     </div>
@@ -160,9 +175,17 @@ export default function SignupPage() {
                     <div>
                         <button
                             type="submit"
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            disabled={loading}
+                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Create Account
+                            {loading ? (
+                                <div className="flex items-center">
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                    Creating account...
+                                </div>
+                            ) : (
+                                "Create Account"
+                            )}
                         </button>
                     </div>
                 </form>

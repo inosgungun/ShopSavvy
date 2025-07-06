@@ -1,27 +1,30 @@
-"use client";  // optional: if you add interactivity
+"use client";  
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { useAuth } from "@/lib/useAuth";
 
 export default function ProfilePage() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if (currentUser) {
-      setUser(currentUser);
-    } else {
+    if (!loading && !user) {
       router.push("/login");
     }
-    setLoading(false);
-  }, [router]);
+  }, [user, loading, router]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("currentUser");
-    router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      router.push("/login");
+    }
   };
 
   if (loading) {
@@ -36,7 +39,14 @@ export default function ProfilePage() {
   }
 
   if (!user) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Redirecting to login...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -57,10 +67,6 @@ export default function ProfilePage() {
             <div className="border-t pt-4">
               <h3 className="text-lg font-medium text-gray-900 mb-2">Account Information</h3>
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">User ID:</span>
-                  <span className="text-gray-900">{user.id}</span>
-                </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Name:</span>
                   <span className="text-gray-900">{user.name}</span>
