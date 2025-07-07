@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../lib/firebase";
 import AuthLayout from "@/components/AuthLayout";
+import toast from "react-hot-toast";
 
 export default function SignupPage() {
     const [formData, setFormData] = useState({
@@ -30,19 +31,19 @@ export default function SignupPage() {
         setLoading(true);
 
         if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-            setError("Please fill in all fields");
+            toast.error("Please fill in all fields");
             setLoading(false);
             return;
         }
 
         if (formData.password.length < 6) {
-            setError("Password must be at least 6 characters");
+            toast.error("Password must be at least 6 characters");
             setLoading(false);
             return;
         }
 
         if (formData.password !== formData.confirmPassword) {
-            setError("Passwords do not match");
+            toast.error("Passwords do not match");
             setLoading(false);
             return;
         }
@@ -55,28 +56,11 @@ export default function SignupPage() {
                 displayName: formData.name
             });
 
-            localStorage.setItem("currentUser", JSON.stringify({
-                id: user.uid,
-                name: formData.name,
-                email: user.email
-            }));
+            await updateProfile(user, { displayName: formData.name });
 
             router.push("/home");
         } catch (error) {
-            console.error("Signup error:", error);
-            switch (error.code) {
-                case 'auth/email-already-in-use':
-                    setError("An account with this email already exists");
-                    break;
-                case 'auth/invalid-email':
-                    setError("Invalid email address");
-                    break;
-                case 'auth/weak-password':
-                    setError("Password is too weak. Please choose a stronger password");
-                    break;
-                default:
-                    setError("Failed to create account. Please try again");
-            }
+            toast.error("Invalid Format");
         } finally {
             setLoading(false);
         }

@@ -9,17 +9,13 @@ export function useAuth() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        const userData = {
+        setUser({
           id: firebaseUser.uid,
           name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
-          email: firebaseUser.email
-        };
-        setUser(userData);
-
-        localStorage.setItem("currentUser", JSON.stringify(userData));
+          email: firebaseUser.email,
+        });
       } else {
         setUser(null);
-        localStorage.removeItem("currentUser");
       }
       setLoading(false);
     });
@@ -28,4 +24,4 @@ export function useAuth() {
   }, []);
 
   return { user, loading };
-} 
+}

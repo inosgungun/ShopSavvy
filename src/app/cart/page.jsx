@@ -1,7 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
+  const router = useRouter();
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
@@ -32,8 +35,23 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100 px-4 py-8">
+
+
       <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg p-6">
-        <h1 className="text-2xl font-bold text-center mb-6">🛒 Shopping Cart</h1>
+        <div className="relative flex items-center justify-center mb-6">
+          {/* Back arrow only on small screens, positioned to the left */}
+          <div className="absolute left-4 md:hidden">
+            <button
+              onClick={() => router.push("/home")}
+              className="flex items-center text-gray-700 hover:text-blue-600"
+            >
+              <ArrowLeft className="w-6 h-6 mr-1" />
+            </button>
+          </div>
+
+          {/* Title stays centered */}
+          <h1 className="text-2xl font-bold">🛒 Shopping Cart</h1>
+        </div>
 
         {cartItems.length === 0 ? (
           <p className="text-center text-gray-500">Your cart is empty</p>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import AuthLayout from "@/components/AuthLayout";
+import toast from 'react-hot-toast';
 
 export default function LoginPage() {
     const [formData, setFormData] = useState({
@@ -24,48 +25,22 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
         setLoading(true);
 
         if (!formData.email || !formData.password) {
-            setError("Please fill in all fields");
+            toast.error("Please fill in all fields");
             setLoading(false);
             return;
         }
 
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
-            const user = userCredential.user;
-
-            localStorage.setItem("currentUser", JSON.stringify({
-                id: user.uid,
-                name: user.displayName || user.email.split('@')[0],
-                email: user.email
-            }));
-
+            await signInWithEmailAndPassword(auth, formData.email, formData.password);
             router.push("/home");
         } catch (error) {
-            console.error("Login error:", error);
-            switch (error.code) {
-                case 'auth/user-not-found':
-                    setError("No account found with this email");
-                    break;
-                case 'auth/wrong-password':
-                    setError("Incorrect password");
-                    break;
-                case 'auth/invalid-email':
-                    setError("Invalid email address");
-                    break;
-                case 'auth/too-many-requests':
-                    setError("Too many failed attempts. Please try again later");
-                    break;
-                default:
-                    setError("Failed to sign in. Please try again");
-            }
-        } finally {
-            setLoading(false);
-        }
+            toast.error("Invalid email or password");
+        } finally { setLoading(false); }
     };
+
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100 px-4">

@@ -1,4 +1,4 @@
-"use client";  
+"use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -6,6 +6,8 @@ import Link from "next/link";
 import { signOut } from "firebase/auth";
 import { auth } from "../../lib/firebase";
 import { useAuth } from "../../lib/useAuth";
+import { ArrowLeft } from "lucide-react";
+
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
@@ -52,7 +54,15 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8  bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100">
       <div className="max-w-md mx-auto">
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="relative bg-white shadow rounded-lg p-6">
+          <div className="md:hidden absolute top-6 left-5">
+            <button
+              onClick={() => router.back()}
+              className="flex items-center text-gray-700 hover:text-blue-600"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+          </div>
           <div className="text-center mb-6">
             <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-white text-2xl font-bold">
@@ -81,13 +91,13 @@ export default function ProfilePage() {
             <div className="border-t pt-4">
               <h3 className="text-lg font-medium text-gray-900 mb-2">Quick Actions</h3>
               <div className="space-y-2">
-                <Link 
+                <Link
                   href="/"
                   className="block w-full text-center py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
                 >
                   Continue Shopping
                 </Link>
-                <Link 
+                <Link
                   href="/cart"
                   className="block w-full text-center py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
                 >
