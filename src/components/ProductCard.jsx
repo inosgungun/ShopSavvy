@@ -45,7 +45,8 @@ export default function ProductCard({ id }) {
     const discountedPrice = Math.round(product.price - (product.price * (product.discountPercentage || 0) / 100));
 
     return (
-        <div className="max-w-xl mx-auto p-4 border rounded-lg shadow-sm">
+        <div className="bg-white max-w-xl mx-auto p-4 border rounded-lg shadow hover:shadow-lg transition">
+        <div className="max-w-xl mx-auto p-4 ">
             <Link href={`/product/${id}`}>
                 <img
                     src={product.image}
@@ -79,6 +80,7 @@ export default function ProductCard({ id }) {
                     Buy Now
                 </button>
             </div>
+        </div>
         </div>
     );
 }

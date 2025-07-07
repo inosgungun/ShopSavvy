@@ -1,2 +1,8 @@
 @import "tailwindcss";
 
+
+@layer utilities {
+  .font-logo {
+    font-family: 'Pacifico', cursive;
+  }
+}
