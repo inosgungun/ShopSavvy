@@ -58,10 +58,6 @@ npm  install
 npm  run  dev
 ```
 
-## 🖼 **Screenshots**
-
-
-
 
 ## 🌐 **Deployment**
 
