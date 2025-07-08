@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { use } from "react";
 import { products } from "@/lib/products";
 import { ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function ProductDetail({ params }) {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function ProductDetail({ params }) {
       existingCart.push({ ...product, quantity: 1 });
     }
     localStorage.setItem("cart", JSON.stringify(existingCart));
-    alert("Product added to cart!");
+    toast.success("Product added to cart!");
   };
 
   const buyNow = () => {
@@ -57,7 +58,7 @@ export default function ProductDetail({ params }) {
         <div className="md:hidden absolute top-6 left-6">
           <button
             onClick={() => router.back()}
-            className="flex items-center text-gray-700 hover:text-blue-600"
+            className="flex items-center w-8 h-8 text-gray-700 hover:text-blue-600"
           >
             <ArrowLeft className="w-6 h-6" />
           </button>
@@ -68,18 +69,22 @@ export default function ProductDetail({ params }) {
           alt={product.name}
           className="w-full h-64 object-contain mb-4 rounded"
         />
-        <h2 className="text-2xl font-semibold mb-2">{product.name}</h2>
-        <p className="text-yellow-600 mb-1">⭐{product.rating}</p>
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-semibold mb-2">{product.name}</h2>
+          <p className="text-yellow-600 mb-1">⭐{product.rating}</p>
+        </div>
         <p className="mb-4 text-gray-700">{product.description}</p>
 
         <div className=" border-b border-b-cyan-950 "></div>
 
         <div className="flex items-center justify-between border-b border-b-cyan-950 pb-2 mb-4">
-          <span className="text-gray-700 font-medium">Price</span>
+          <div className="flex flex-col">
+            <span className="text-gray-700 font-medium">Price</span>
+            <span className="text-green-600 text-sm font-medium">{product.discountPercentage || 0}% OFF</span>
+          </div>
           <div className="text-right">
             <span className="text-gray-500 line-through text-sm">₹ {product.price}</span>
             <div className="text-blue-600 font-bold text-xl">₹ {discountedPrice}</div>
-            <span className="text-green-600 text-sm font-medium">{product.discountPercentage || 0}% OFF</span>
           </div>
         </div>
 

@@ -18,7 +18,7 @@ export default function RootPage() {
       </p>
 
       <Link
-        href="/signup"
+        href="/login"
         className="px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md transition"
       >
         Get Started

@@ -1,15 +1,19 @@
 "use client";
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/useAuth';
+import { useAuth } from '../lib/useAuth';
+import toast from 'react-hot-toast';
 
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
+    if (!loading && !user && !hasRedirected.current) {
+      hasRedirected.current = true;
+      toast.error("Please login to get access!");
+      router.replace("/login");
     }
   }, [user, loading, router]);
 

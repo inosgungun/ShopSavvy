@@ -1,6 +1,7 @@
 import { useRouter } from "next/navigation";
 import { products } from "../lib/products";
 import Link from 'next/link';
+import toast from "react-hot-toast"
 
 export default function ProductCard({ id }) {
   const router = useRouter();
@@ -17,7 +18,7 @@ export default function ProductCard({ id }) {
       existingCart.push({ ...product, quantity: 1 });
     }
     localStorage.setItem("cart", JSON.stringify(existingCart));
-    alert("Product added to cart!");
+    toast.success("Product added to cart!");
   };
 
   const buyNow = (e) => {

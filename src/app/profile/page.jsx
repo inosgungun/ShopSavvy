@@ -7,6 +7,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../lib/firebase";
 import { useAuth } from "../../lib/useAuth";
 import { ArrowLeft } from "lucide-react";
+import toast from "react-hot-toast";
 
 
 export default function ProfilePage() {
@@ -22,6 +23,7 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      toast.success("Logged out successfully!");
       router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
