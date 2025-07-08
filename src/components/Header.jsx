@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +13,9 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);             // sign out user from Firebase Auth
-      router.push("/login");           // redirect to login
+      await signOut(auth);  
+      toast.success("Logged out successfully!");        
+      router.push("/");          
     } catch (error) {
       console.error("Logout failed:", error);
     }

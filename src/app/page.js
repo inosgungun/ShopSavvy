@@ -1,10 +1,9 @@
 "use client";
 import Link from "next/link";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function RootPage() {
   return (
-    <ProtectedRoute>
+
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-pink-100 to-yellow-100 px-4">
       <div className="flex flex-col items-center justify-center space-y-2 mb-6">
         <span className="text-6xl">🛍️</span>
@@ -24,6 +23,6 @@ export default function RootPage() {
         Get Started
       </Link>
     </div>
-    </ProtectedRoute>
+  
   );
 }

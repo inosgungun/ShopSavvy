@@ -12,7 +12,6 @@ export default function ProtectedRoute({ children }) {
   useEffect(() => {
     if (!loading && !user && !hasRedirected.current) {
       hasRedirected.current = true;
-      toast.error("Please login to get access!");
       router.replace("/login");
     }
   }, [user, loading, router]);
