@@ -2,7 +2,7 @@ export const products = [
     { 
         id: "1", 
         name: "Wireless Headphones", 
-        image: "/images/headphones.png", 
+        image: "/images/headphones3.png", 
         price: 1999, 
         discountPercentage: 30,
         rating: 4.5,
@@ -11,16 +11,16 @@ export const products = [
     {
         id: "2",
         name: "T-Shirt",
-        image: "/images/tshirt.png",
+        image: "/images/tshirt2.png",
         price: 1099,
         discountPercentage: 35,
         rating: 4.0,
-        description: "Orange coloured Oversized T-Shirt"
+        description: "Women Oversized T-Shirt"
     },
     { 
         id: "3", 
         name: "Smart Watch", 
-        image: "/images/watch.png", 
+        image: "/images/smartWatch.png", 
         price: 2999, 
         discountPercentage: 15,
         rating: 4.2,
@@ -28,17 +28,17 @@ export const products = [
     },
     { 
         id: "4", 
-        name: "Dress",
-        image: "/images/women-dress.png",
+        name: "Co-ord Set",
+        image: "/images/topandpant.png",
         price: 2999,
         discountPercentage: 45,
         rating: 4.5,
-        description: "A beautiful red dress."
+        description: "A stylish co-ord set for trendy look."
     },
     { 
         id: "5", 
         name: "Laptop", 
-        image: "/images/laptop.png", 
+        image: "/images/laptop2.png", 
         price: 50899, 
         discountPercentage: 40,
         rating: 4.4,
@@ -56,16 +56,16 @@ export const products = [
     {
         id: "7",
         name: "T-Shirt",
-        image: "/images/tshirt.png",
+        image: "/images/tshirt3.png",
         price: 1000,
         discountPercentage: 52,
         rating: 4.2,
-        description: "Men Oversized T-Shirt"
+        description: "Men T-Shirt"
     },
     {
         id: "8",
         name: "Gaming Mouse", 
-        image: "/images/mouse.png", 
+        image: "/images/mouse2.png", 
         price: 1899, 
         discountPercentage: 50,
         rating: 4.7,

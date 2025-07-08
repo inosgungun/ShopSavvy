@@ -38,30 +38,36 @@ export default function ProductCard({ id }) {
   return (
     <div className="bg-white rounded-lg shadow hover:shadow-md transition flex flex-col h-full">
       <Link href={`/product/${id}`} className="block">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-40 object-contain rounded-t"
-        />
+        <div className="h-60 w-70 overflow-hidden flex items-center justify-center">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-60 h-50 object-cover"
+          />
+        </div>
       </Link>
 
       <div className="flex-1 flex flex-col px-2 py-2">
-        <h2 className="text-sm font-semibold mb-1 text-center">{product.name}</h2>
-        <p className="text-yellow-600 text-xs text-center">⭐{product.rating}</p>
-        <p className="text-gray-600 text-xs line-clamp-2 text-center mb-1">{product.description}</p>
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-sm font-semibold">{product.name}</h2>
+          <p className="text-black-600 text-xs">⭐{product.rating}</p>
+        </div>
+
         <div className="mt-auto border-t pt-1">
           <div className="flex items-center justify-between">
-            <span className="text-gray-700 text-xs">Price</span>
+            <div className="flex flex-col">
+              <span className="text-gray-700 text-xs">Price</span>
+            <div className="text-green-600 text-xs">{product.discountPercentage || 0}% OFF</div>
+            </div>
             <div className="text-right">
               <div className="text-gray-500 line-through text-xs">₹{product.price}</div>
               <div className="text-blue-600 font-bold text-base">₹{discountedPrice}</div>
-              <div className="text-green-600 text-xs">{product.discountPercentage || 0}% OFF</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex space-x-1 mt-2 px-2 pb-2">
+      <div className="flex space-x-4 px-2 pb-2">
         <button
           className="flex-1 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
           onClick={addToCart}
